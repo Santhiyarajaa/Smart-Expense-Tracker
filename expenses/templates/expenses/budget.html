@@ -1,0 +1,67 @@
+{% extends 'expenses/base.html' %}
+{% block title %}Budget - Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-piggy-bank"></i> Budget Management</h2>
+
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="panel-card">
+                <h5 class="panel-title">Set Monthly Budget</h5>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" for="id_monthly_budget">Monthly Budget (₹)</label>
+                        {{ form.monthly_budget }}
+                        {% if form.monthly_budget.errors %}<div class="text-danger small mt-1">{{ form.monthly_budget.errors.0 }}</div>{% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-circle"></i> Save Budget</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="panel-card">
+                <h5 class="panel-title">This Month's Budget Status</h5>
+                {% if budget_status.budget %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Monthly Budget</span>
+                        <strong>₹{{ budget_status.monthly_budget|floatformat:2 }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Current Spending</span>
+                        <strong>₹{{ budget_status.current_spending|floatformat:2 }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Remaining</span>
+                        <strong class="{% if budget_status.remaining < 0 %}text-danger{% else %}text-success{% endif %}">
+                            ₹{{ budget_status.remaining|floatformat:2 }}
+                        </strong>
+                    </div>
+
+                    <div class="progress mb-2" style="height: 22px;">
+                        <div class="progress-bar {% if budget_status.is_exceeded %}bg-danger{% elif budget_status.is_warning %}bg-warning{% else %}bg-success{% endif %}"
+                             role="progressbar"
+                             style="width: {{ budget_status.display_percentage }}%;"
+                             aria-valuenow="{{ budget_status.percentage_used }}" aria-valuemin="0" aria-valuemax="100">
+                            {% if budget_status.percentage_used >= 100 %}100%+{% else %}{{ budget_status.percentage_used|floatformat:0 }}%{% endif %}
+                        </div>
+                    </div>
+                    <p class="text-muted small">₹{{ budget_status.current_spending|floatformat:2 }} / ₹{{ budget_status.monthly_budget|floatformat:2 }} used</p>
+
+                    {% if budget_status.is_exceeded %}
+                        <div class="alert alert-danger mt-3"><strong>🚨 Budget Exceeded:</strong> You have exceeded your monthly budget.</div>
+                    {% elif budget_status.is_warning %}
+                        <div class="alert alert-warning mt-3"><strong>⚠️ Warning:</strong> You have used more than 80% of your monthly budget.</div>
+                    {% elif budget_status.is_within_budget %}
+                        <div class="alert alert-success mt-3"><strong>✓</strong> You are within your monthly budget.</div>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted">You haven't set a budget for this month yet. Set one to track your spending against it.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

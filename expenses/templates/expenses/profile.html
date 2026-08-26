@@ -1,0 +1,43 @@
+{% extends 'expenses/base.html' %}
+{% block title %}Profile - Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-person"></i> Profile</h2>
+
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="panel-card text-center">
+                <i class="bi bi-person-circle" style="font-size: 4rem; color: var(--primary);"></i>
+                <h4 class="fw-bold mt-2 mb-0">{{ user.username }}</h4>
+                <p class="text-muted">{{ user.email|default:"No email on file" }}</p>
+                <p class="text-muted small">Member since {{ member_since|date:"d M Y" }}</p>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="panel-card">
+                <h5 class="panel-title">Your Activity</h5>
+                <div class="row g-3 text-center">
+                    <div class="col-6">
+                        <p class="summary-label mb-1">Total Expenses Logged</p>
+                        <h4 class="summary-value">{{ expense_count }}</h4>
+                    </div>
+                    <div class="col-6">
+                        <p class="summary-label mb-1">Total Spent (All Time)</p>
+                        <h4 class="summary-value">₹{{ summary.overall_total|floatformat:2 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-card mt-3" style="max-width: 400px;">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger w-100">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

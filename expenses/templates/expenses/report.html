@@ -1,0 +1,103 @@
+{% extends 'expenses/base.html' %}
+{% block title %}Report - Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-file-earmark-text"></i> Smart Expense Report</h2>
+
+    <div class="panel-card mb-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small">Period</label>
+                <select name="period" class="form-select">
+                    <option value="today" {% if period == 'today' %}selected{% endif %}>Today</option>
+                    <option value="week" {% if period == 'week' %}selected{% endif %}>This Week</option>
+                    <option value="month" {% if period == 'month' %}selected{% endif %}>This Month</option>
+                    <option value="all" {% if period == 'all' %}selected{% endif %}>All Time</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Apply</button>
+            </div>
+            <div class="col-md-5 d-flex gap-2 justify-content-md-end">
+                <a href="{% url 'report_csv' %}?period={{ period }}" class="btn btn-outline-success flex-fill">
+                    <i class="bi bi-filetype-csv"></i> Download CSV
+                </a>
+                <a href="{% url 'report_pdf' %}?period={{ period }}" class="btn btn-outline-danger flex-fill">
+                    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="panel-card mb-3">
+        <div class="row">
+            <div class="col-md-4"><p class="text-muted mb-1">User</p><h5>{{ user.username }}</h5></div>
+            <div class="col-md-4"><p class="text-muted mb-1">Selected Period</p><h5>{{ period_label }}</h5></div>
+            <div class="col-md-4"><p class="text-muted mb-1">Total Expenses</p><h5>₹{{ total|floatformat:2 }}</h5></div>
+        </div>
+    </div>
+
+    <div class="panel-card mb-3">
+        <h5 class="panel-title">Category Summary</h5>
+        {% if category_summary %}
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Category</th><th class="text-end">Amount</th></tr></thead>
+                <tbody>
+                {% for row in category_summary %}
+                    <tr><td>{{ row.category }}</td><td class="text-end">₹{{ row.total|floatformat:2 }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="text-muted">No data for this period.</p>
+        {% endif %}
+    </div>
+
+    <div class="panel-card">
+        <h5 class="panel-title">Expense Table</h5>
+        {% if expenses %}
+        <div class="expense-table-wrapper table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="text-end">Amount</th><th>Notes</th></tr></thead>
+                <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.date|date:"d M Y" }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td><span class="badge-category">{{ expense.category }}</span></td>
+                        <td class="text-end">₹{{ expense.amount }}</td>
+                        <td>{{ expense.notes|default:"—" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="expense-cards-wrapper">
+            {% for expense in expenses %}
+                <div class="expense-card">
+                    <div class="expense-card-top">
+                        <span class="expense-card-desc">{{ expense.description }}</span>
+                        <span class="expense-card-amount">₹{{ expense.amount }}</span>
+                    </div>
+                    <div class="expense-card-meta">
+                        <span class="badge-category">{{ expense.category }}</span>
+                        <span>{{ expense.date|date:"d M Y" }}</span>
+                    </div>
+                    {% if expense.notes %}
+                        <div class="expense-card-notes">{{ expense.notes }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>No expenses found for this period.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

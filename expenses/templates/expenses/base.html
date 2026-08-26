@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Expense Tracker{% endblock %}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'expenses/css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<div class="app-shell">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-wallet2"></i>
+            <span>Smart Expense Tracker</span>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="{% url 'add_expense' %}" class="{% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}"><i class="bi bi-plus-circle"></i> Add Expense</a></li>
+            <li><a href="{% url 'expense_list' %}" class="{% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}"><i class="bi bi-receipt"></i> Expenses</a></li>
+            <li><a href="{% url 'budget' %}" class="{% if request.resolver_match.url_name == 'budget' %}active{% endif %}"><i class="bi bi-piggy-bank"></i> Budget</a></li>
+            <li><a href="{% url 'report' %}" class="{% if request.resolver_match.url_name == 'report' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Reports</a></li>
+            <li><a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}"><i class="bi bi-person"></i> Profile</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-chip">
+                <i class="bi bi-person-circle"></i>
+                <span>{{ user.username }}</span>
+            </div>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-light w-100 mt-2">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Mobile top bar -->
+    <div class="mobile-topbar d-lg-none">
+        <button class="btn btn-link text-white" id="sidebarToggle" aria-label="Open menu"><i class="bi bi-list fs-3"></i></button>
+        <span class="fw-bold"><i class="bi bi-wallet2"></i> Smart Expense Tracker</span>
+    </div>
+    <!-- Backdrop shown behind the drawer on mobile -->
+    <div class="sidebar-backdrop d-lg-none" id="sidebarBackdrop"></div>
+
+    <main class="main-content">
+        {% if messages %}
+            <div class="container-fluid mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% else %}
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block auth_content %}{% endblock %}
+{% endif %}
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js: self-hosted locally (avoids CDN version-availability issues, e.g. 4.4.4 was never published on cdnjs) -->
+<script src="{% static 'expenses/js/chart.umd.js' %}"></script>
+<!-- Custom JS -->
+<script src="{% static 'expenses/js/dashboard.js' %}"></script>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

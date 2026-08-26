@@ -1,0 +1,49 @@
+{% extends 'expenses/base.html' %}
+{% block title %}Edit Expense - Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-pencil"></i> Edit Expense</h2>
+
+    <div class="panel-card" style="max-width: 640px;">
+        <form method="post" novalidate id="expenseForm">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label" for="id_description">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+                <div class="form-text">
+                    Current Category: <span id="predictedCategory" class="badge-category">{{ expense.category }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="id_amount">Amount (₹)</label>
+                    {{ form.amount }}
+                    {% if form.amount.errors %}<div class="text-danger small mt-1">{{ form.amount.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label" for="id_date">Date</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="id_notes">Notes (optional)</label>
+                {{ form.notes }}
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Update Expense</button>
+                <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const predictUrl = "{% url 'predict_category_ajax' %}";
+</script>
+{% endblock %}

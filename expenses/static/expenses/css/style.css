@@ -1,0 +1,390 @@
+:root {
+    --primary: #5b21b6;
+    --primary-light: #7c3aed;
+    --accent-blue: #2563eb;
+    --bg-soft: #f6f5fb;
+    --card-radius: 16px;
+}
+
+body {
+    background-color: var(--bg-soft);
+    font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+    color: #24243a;
+}
+
+/* ---------- App shell ---------- */
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+    padding: 0 8px;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    transition: background 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.active {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+}
+
+.sidebar-footer {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 16px;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.mobile-topbar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        z-index: 1050;
+        transition: left 0.25s ease;
+        width: 260px;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+    }
+    .sidebar.show {
+        left: 0;
+    }
+    .mobile-topbar {
+        display: flex;
+    }
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 10, 30, 0.45);
+    z-index: 1040;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar-backdrop.show {
+    display: block;
+    opacity: 1;
+}
+
+/* ---------- Auth pages ---------- */
+.auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+/* ---------- Cards ---------- */
+.summary-card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(91,33,182,0.08);
+    height: 100%;
+}
+
+.summary-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.bg-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.bg-purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+.bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.bg-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+
+.summary-label {
+    color: #7a7a8c;
+    font-size: 0.82rem;
+    margin-bottom: 2px;
+}
+
+.summary-value {
+    font-weight: 700;
+    margin: 0;
+}
+
+.panel-card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 22px;
+    box-shadow: 0 6px 18px rgba(91,33,182,0.06);
+}
+
+.panel-title {
+    font-weight: 600;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge-category {
+    background: #ede9fe;
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.insight-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insight-list li {
+    padding: 10px 14px;
+    background: #f6f5fb;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 10px;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    color: #c4b5fd;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* ---------- Responsive expense cards (mobile alternative to tables) ---------- */
+.expense-table-wrapper {
+    display: block;
+}
+
+.expense-cards-wrapper {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .expense-table-wrapper {
+        display: none;
+    }
+    .expense-cards-wrapper {
+        display: block;
+    }
+}
+
+.expense-card {
+    background: #fbfaff;
+    border: 1px solid #ece7fb;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+.expense-card .expense-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.expense-card .expense-card-desc {
+    font-weight: 600;
+    font-size: 0.98rem;
+}
+
+.expense-card .expense-card-amount {
+    font-weight: 700;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.expense-card .expense-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.expense-card .expense-card-notes {
+    font-size: 0.85rem;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.expense-card .expense-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.expense-card .expense-card-actions a {
+    flex: 1;
+    text-align: center;
+}
+
+/* ---------- Responsive typography & spacing ---------- */
+@media (max-width: 575.98px) {
+    h2.fw-bold { font-size: 1.4rem; }
+    .summary-value { font-size: 1.15rem; }
+    .container-fluid { padding-left: 14px; padding-right: 14px; }
+}
+
+/* Keep chart canvases contained on all screen sizes */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 260px;
+}
+
+@media (max-width: 575.98px) {
+    .chart-container {
+        height: 220px;
+    }
+}
+
+.panel-card canvas {
+    max-width: 100%;
+}
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* ---------- Forms ---------- */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(124,58,237,0.15);
+}
+
+/* ---------- Tables ---------- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 575.98px) {
+    .panel-card, .auth-card { padding: 18px; }
+}
+
+/* Ensure charts and content never force horizontal scroll on narrow phones */
+canvas {
+    max-width: 100%;
+}
+
+.container-fluid {
+    overflow-x: hidden;
+}
+
+@media (max-width: 400px) {
+    .summary-card {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+}

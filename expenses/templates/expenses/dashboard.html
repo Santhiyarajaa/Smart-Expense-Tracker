@@ -1,0 +1,152 @@
+{% extends 'expenses/base.html' %}
+{% block title %}Dashboard - Smart Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-0">Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, {{ user.username }} 👋</p>
+        </div>
+        <a href="{% url 'add_expense' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Expense</a>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="summary-card">
+                <div class="summary-icon bg-blue"><i class="bi bi-calendar-day"></i></div>
+                <div>
+                    <p class="summary-label">Today's Expense</p>
+                    <h4 class="summary-value">₹{{ summary.today_total|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="summary-card">
+                <div class="summary-icon bg-purple"><i class="bi bi-calendar-week"></i></div>
+                <div>
+                    <p class="summary-label">This Week</p>
+                    <h4 class="summary-value">₹{{ summary.week_total|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="summary-card">
+                <div class="summary-icon bg-indigo"><i class="bi bi-calendar-month"></i></div>
+                <div>
+                    <p class="summary-label">This Month</p>
+                    <h4 class="summary-value">₹{{ summary.month_total|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="summary-card">
+                <div class="summary-icon bg-teal"><i class="bi bi-graph-up"></i></div>
+                <div>
+                    <p class="summary-label">Total Expenses</p>
+                    <h4 class="summary-value">₹{{ summary.overall_total|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if budget_status.budget %}
+        {% if budget_status.is_exceeded %}
+            <div class="alert alert-danger"><strong>🚨 Budget Exceeded:</strong> You have exceeded your monthly budget.</div>
+        {% elif budget_status.is_warning %}
+            <div class="alert alert-warning"><strong>⚠️ Warning:</strong> You have used more than 80% of your monthly budget.</div>
+        {% endif %}
+    {% endif %}
+
+    <div class="row g-3 mb-4">
+        <!-- Category chart -->
+        <div class="col-lg-6">
+            <div class="panel-card h-100">
+                <h5 class="panel-title"><i class="bi bi-pie-chart"></i> Category-wise Spending</h5>
+                {% if has_category_data %}
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-pie-chart"></i>
+                        <p>📊 No expense data available yet.</p>
+                        <p class="text-muted small">Add your first expense to see your spending breakdown.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Trend chart -->
+        <div class="col-lg-6">
+            <div class="panel-card h-100">
+                <h5 class="panel-title"><i class="bi bi-bar-chart-line"></i> Spending Trend (This Month)</h5>
+                {% if has_trend_data %}
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <p>📈 No spending data available for this month.</p>
+                        <p class="text-muted small">Add an expense to start tracking your spending.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- Insights -->
+        <div class="col-lg-6">
+            <div class="panel-card h-100">
+                <h5 class="panel-title"><i class="bi bi-lightbulb"></i> Smart Spending Insights</h5>
+                <ul class="insight-list">
+                    {% for insight in insights %}
+                        <li>{{ insight }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Recent expenses -->
+        <div class="col-lg-6">
+            <div class="panel-card h-100">
+                <h5 class="panel-title"><i class="bi bi-clock-history"></i> Recent Expenses</h5>
+                {% if not has_expenses %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No recent expenses.</p>
+                        <p class="text-muted small">Your newly added expenses will appear here.</p>
+                        <a href="{% url 'add_expense' %}" class="btn btn-primary btn-sm">Add Your First Expense</a>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="text-end">Amount</th></tr></thead>
+                            <tbody>
+                            {% for expense in recent_expenses %}
+                                <tr>
+                                    <td>{{ expense.date|date:"d M Y" }}</td>
+                                    <td>{{ expense.description }}</td>
+                                    <td><span class="badge-category">{{ expense.category }}</span></td>
+                                    <td class="text-end">₹{{ expense.amount }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.dashboardData = {
+        categoryLabels: {{ category_labels|safe }},
+        categoryValues: {{ category_values|safe }},
+        trendLabels: {{ trend_labels|safe }},
+        trendValues: {{ trend_values|safe }}
+    };
+</script>
+{% endblock %}
