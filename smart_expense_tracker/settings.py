@@ -13,7 +13,12 @@ SECRET_KEY = 'django-insecure-change-this-secret-key-in-production-2026'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.2.2']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '10.0.2.2',
+    'smart-expense-tracker-2-hxj4.onrender.com',
+]
 # For testing on a physical Android phone over your local Wi-Fi, add your
 # computer's local IPv4 address here too, e.g. '192.168.1.42'. Run
 # `ipconfig` (Windows) or `ifconfig` / `ip addr` (macOS/Linux) to find it.
