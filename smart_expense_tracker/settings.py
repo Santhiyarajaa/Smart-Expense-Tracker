@@ -7,11 +7,15 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+
+# ----------------------------------------------------------------------
+# Security
+# ----------------------------------------------------------------------
+
 SECRET_KEY = 'django-insecure-change-this-secret-key-in-production-2026'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# False for public/Render deployment
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -19,12 +23,16 @@ ALLOWED_HOSTS = [
     '10.0.2.2',
     'smart-expense-tracker-2-hxj4.onrender.com',
 ]
-# For testing on a physical Android phone over your local Wi-Fi, add your
-# computer's local IPv4 address here too, e.g. '192.168.1.42'. Run
-# `ipconfig` (Windows) or `ifconfig` / `ip addr` (macOS/Linux) to find it.
+
+# Allow Django POST/CSRF requests from the Render website
+CSRF_TRUSTED_ORIGINS = [
+    'https://smart-expense-tracker-2-hxj4.onrender.com',
+]
 
 
+# ----------------------------------------------------------------------
 # Application definition
+# ----------------------------------------------------------------------
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,6 +51,11 @@ INSTALLED_APPS = [
     'expenses',
 ]
 
+
+# ----------------------------------------------------------------------
+# Middleware
+# ----------------------------------------------------------------------
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -53,6 +66,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+# ----------------------------------------------------------------------
+# URL / WSGI configuration
+# ----------------------------------------------------------------------
 
 ROOT_URLCONF = 'smart_expense_tracker.urls'
 
@@ -74,8 +92,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'smart_expense_tracker.wsgi.application'
 
 
+# ----------------------------------------------------------------------
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# ----------------------------------------------------------------------
 
 DATABASES = {
     'default': {
@@ -85,8 +104,9 @@ DATABASES = {
 }
 
 
+# ----------------------------------------------------------------------
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+# ----------------------------------------------------------------------
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -94,7 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {'min_length': 6},
+        'OPTIONS': {
+            'min_length': 6,
+        },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -105,8 +127,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# ----------------------------------------------------------------------
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# ----------------------------------------------------------------------
 
 LANGUAGE_CODE = 'en-us'
 
@@ -117,33 +140,41 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# ----------------------------------------------------------------------
+# Static files
+# ----------------------------------------------------------------------
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+# ----------------------------------------------------------------------
+# Default primary key
+# ----------------------------------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 # ----------------------------------------------------------------------
 # Authentication redirect settings
 # ----------------------------------------------------------------------
+
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
-# Currency symbol used across templates (India Rupee, as per project spec)
-CURRENCY_SYMBOL = '₹'
 
 # ----------------------------------------------------------------------
-# Django REST Framework (powers the Flutter mobile app & any other API
-# client). Uses token authentication: the Flutter app logs in via
-# /api/login/, receives a token, and sends it as
-# "Authorization: Token <token>" on every subsequent request.
+# Currency
 # ----------------------------------------------------------------------
+
+CURRENCY_SYMBOL = '₹'
+
+
+# ----------------------------------------------------------------------
+# Django REST Framework
+# ----------------------------------------------------------------------
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -154,11 +185,12 @@ REST_FRAMEWORK = {
     ],
 }
 
+
 # ----------------------------------------------------------------------
-# CORS: allows the Flutter web (or any browser-based) client to call the
-# API from a different origin. Native Android/iOS builds of the Flutter
-# app are NOT subject to CORS, so this mainly matters if you ever run
-# `flutter run -d chrome`.
+# CORS
 # ----------------------------------------------------------------------
-CORS_ALLOW_ALL_ORIGINS = True  # OK for a college/demo project; restrict in production.
+
+# Suitable for a college/demo project.
+# For a production application, restrict this to specific origins.
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
